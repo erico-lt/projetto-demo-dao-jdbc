@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
-import model.entites.Item;
 
 public class DB {
     private static Connection conn = null;
@@ -182,54 +181,7 @@ public class DB {
         }
 
     }
-
-    public static Item verificItemForSale(Integer codProduct, Integer quant) {
-        Item item = null;
-        if (quant <= 0) {
-            throw new DbException("Qauntity required is equals 0 or less than 0");
-        }
-        String cod = Integer.toString(codProduct);
-        Connection con = null;
-        Statement st = null;
-        ResultSet rs = null;
-        PreparedStatement ps = null;
-        try {
-            con = getConnection();
-            con.setAutoCommit(false);
-            st = con.createStatement();
-            rs = st.executeQuery("SELECT * FROM products WHERE cod = " + cod);
-
-            if (rs.next()) {
-                if (rs.getInt("quant") <= quant) {
-                    throw new DbException("[ERRO] quantity not disponible in stock");
-                } else {
-                    item = new Item(rs.getString("name"), rs.getString("model"), rs.getDouble("price"),            
-                    rs.getInt("quant") - (rs.getInt("quant") - quant));
-                    ps = con.prepareStatement("UPDATE products SET quant = ? WHERE (cod = ?)");
-                    ps.setInt(1, rs.getInt("quant") - quant);
-                    ps.setInt(2, item.getCod_Product());
-                    int rows = ps.executeUpdate();
-                    System.out.println("Success!!, Rows: " + rows);
-                    con.commit();
-                }
-            }            
-
-        } catch (SQLException e) {
-            try {
-                con.rollback();
-                throw new DbException("[ERRO] order rolled back! Caused by: " + e.getMessage());
-            } catch (SQLException e1) {
-                throw new DbException("[ERRO] failure in rollback! " + e1.getMessage());
-            }
-        } finally {
-            closeConnection(con);
-            closeResult(rs);
-            closeStatment(st);
-            closeStatment(ps);
-        }
-        return item;
-    }
-
+    
     public static void closeConnection(Connection conn) {
         if (conn != null) {
             try {
