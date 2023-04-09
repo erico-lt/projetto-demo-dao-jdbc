@@ -1,15 +1,19 @@
 package model.entites;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Seller {
+public class Seller implements Serializable{   
     
-    private static final long serializeVersionUID = 1L;
     private int id;
     private String name;
     private String email;
     private Date birthDate;
     private double baseSalary;
+
+    private Department department;   
+
+    private static final long serializeVersionUID = 1L;
 
     public Seller() {
     }
@@ -58,6 +62,14 @@ public class Seller {
         this.baseSalary = baseSalary;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -88,7 +100,7 @@ public class Seller {
 
     @Override
     public String toString() {
-        return "Seller [id=" + id + ", name=" + name + ", email=" + email + ", baseSalary=" + baseSalary + "]";
-    }   
-    
+        return "Seller [id=" + id + ", name=" + name + ", email=" + email + ", birthDate=" + birthDate + ", baseSalary="
+                + baseSalary + ", department=" + department + "]";
+    }
 }
