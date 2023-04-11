@@ -116,7 +116,6 @@ public class DB {
         } catch (Exception e) {
             throw new DbException(e.getMessage());
         }
-
     }  
 
     public static void insertClient(String name, String email, long telephone, String address, String cpf_cnpj, String typeClient, Integer cod_Client) {

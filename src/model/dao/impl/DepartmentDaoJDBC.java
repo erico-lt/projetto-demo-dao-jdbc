@@ -1,7 +1,10 @@
 package model.dao.impl;
 
+import java.sql.*;
 import java.util.List;
 
+import db.DB;
+import db.DbException;
 import model.dao.DepartmentDao;
 import model.entites.Department;
 
@@ -9,14 +12,59 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 
     @Override
     public void insert(Department obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insert'");
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            String sql = "INSERT INTO department (name, id) VALUE (?,?)";
+            con = DB.getConnection();
+            con.setAutoCommit(false);
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, obj.getName().toUpperCase());
+            ps.setInt(2, obj.getId());
+            int rows = ps.executeUpdate();
+
+            con.commit();
+            System.out.printf("Success insert!!, Rows affected %d \n", rows);
+
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                throw new DbException("[ERRO] failure insert! Erro by: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new DbException("[ERRO] erro in rolllback!!, erro by: " + e1.getMessage());
+            }
+        } finally {
+            DB.closeConnection(con);
+            DB.closeStatment(ps);
+        }
     }
 
     @Override
     public void update(Department obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        String query = "UPDATE department SET name = ? WHERE (id = ?)";
+        Connection con = null;        
+        PreparedStatement ps = null;
+        try {
+            con = DB.getConnection();
+            con.setAutoCommit(false);            
+            ps = con.prepareStatement(query);
+            ps.setString(1, obj.getName()); 
+            ps.setInt(2, obj.getId());
+            int rows = ps.executeUpdate();  
+            con.commit();
+            System.out.printf("Success update, rows affected %d \n", rows);  
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                throw new DbException("[ERRO] failure update, erro by: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new DbException("[ERRO] erro in rollback, erro by: " + e1.getMessage());
+            }
+        } finally {
+            DB.closeConnection(con);
+            DB.closeStatment(ps);
+        }         
     }
 
     @Override

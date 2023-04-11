@@ -13,7 +13,7 @@ public class Seller implements Serializable{
 
     private Department department;   
 
-    private static final long serializeVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public Seller() {
     }

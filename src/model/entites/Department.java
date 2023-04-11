@@ -12,7 +12,8 @@ public class Department implements Serializable{
     }
 
     public Department (String name, int id) {
-
+        this.setName(name);
+        this.setId(id);
     }
 
     public int getId() {
