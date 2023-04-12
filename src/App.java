@@ -8,7 +8,7 @@ public class App {
         DepartmentDao departmentDao = DaoFactory.creatDepartmentDaoJDBC();
         Department publicidade = new  Department("limpeza", 6);
         try {
-            departmentDao.update(publicidade);
+            departmentDao.deletById(publicidade.getId());;
         } catch (Exception e) {
             System.out.println("erro insert by: " + e.getMessage());
         }
