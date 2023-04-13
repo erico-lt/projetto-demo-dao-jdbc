@@ -16,7 +16,7 @@ public class DepartmentDaoJDBC implements DepartmentDao{
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            String sql = "INSERT INTO department (name, id) VALUE (?,?)";
+            String sql = "INSERT INTO department (Name, id) VALUE (?,?)";
             con = DB.getConnection();
             con.setAutoCommit(false);
             ps = con.prepareStatement(sql);
