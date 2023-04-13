@@ -1,6 +1,7 @@
 package model.dao.impl;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -133,8 +134,32 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 
     @Override
     public List<Department> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        String query = "SELECT * FROM department";
+        List<Department> listDepartment = new ArrayList<>();
+        Connection con= null;
+        PreparedStatement ps = null;
+        ResultSet rs= null;
+        try {
+            con = DB.getConnection();
+            con.setAutoCommit(false);
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Integer id = rs.getInt("Id");
+                String name = rs.getString("Name");
+                listDepartment.add(new Department(name, id));
+            }
+            con.commit();
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                throw new DbException("[EERO] problem acess list department, erro by: " + e.getMessage());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }            
+        }
+
+        return listDepartment;
     }
     
 }
