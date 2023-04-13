@@ -51,7 +51,7 @@ public class DepartmentDaoJDBC implements DepartmentDao{
             con.setAutoCommit(false);            
             ps = con.prepareStatement(query);
             ps.setString(1, obj.getName()); 
-            ps.setInt(2, obj.getId());
+            
             int rows = ps.executeUpdate();  
             con.commit();
             System.out.printf("Success update, rows affected %d \n", rows);  
