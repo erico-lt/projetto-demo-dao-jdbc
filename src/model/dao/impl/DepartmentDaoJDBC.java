@@ -32,11 +32,11 @@ public class DepartmentDaoJDBC implements DepartmentDao{
                 con.rollback();
                 throw new DbException("[ERRO] failure insert! Erro by: " + e.getMessage());
             } catch (SQLException e1) {
-                throw new DbException("[ERRO] erro in rolllback!!, erro by: " + e1.getMessage());
+                e1.printStackTrace();
             }
         } finally {
             DB.closeConnection(con);
-            DB.closeStatment(ps);
+            DB.closeStatement(ps);
         }
     }
 
@@ -59,11 +59,11 @@ public class DepartmentDaoJDBC implements DepartmentDao{
                 con.rollback();
                 throw new DbException("[ERRO] failure update, erro by: " + e.getMessage());
             } catch (SQLException e1) {
-                throw new DbException("[ERRO] erro in rollback, erro by: " + e1.getMessage());
+                e1.printStackTrace();
             }
         } finally {
             DB.closeConnection(con);
-            DB.closeStatment(ps);
+            DB.closeStatement(ps);
         }         
     }
 
@@ -80,23 +80,55 @@ public class DepartmentDaoJDBC implements DepartmentDao{
             int rowsaffected = ps.executeUpdate();
             con.commit();
             System.out.println("Success!!, rows affected: " + rowsaffected);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 con.rollback();
                 throw new DbException("[ERRO] failured Update, erro by: " + e.getMessage());
-            } catch (Exception e1) {
-                throw new DbException("[EERO] problem in rollback, erro by: " + e1.getMessage());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
             }           
         } finally {
             DB.closeConnection(con);
-            DB.closeStatment(ps);
+            DB.closeStatement(ps);
         }
     }
 
     @Override
     public Department findByiId(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByiId'");
+        String query = "SELECT * FROM department WHERE (Id = ?);";
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String name;
+        Integer idReturn;
+        Department department = null;
+        try {
+            con = DB.getConnection();
+            con.setAutoCommit(false);
+            ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                name = rs.getString("Name");
+                idReturn = rs.getInt("Id"); 
+                department = new Department(name,idReturn);               
+            }            
+            con.commit(); 
+            return department;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                throw new DbException("[ERRO] department not excist by:" + e.getMessage());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        } finally {
+            DB.closeConnection(con);
+            DB.closeResult(rs);
+            DB.closeStatement(ps);
+        }
+        return null;  
     }
 
     @Override

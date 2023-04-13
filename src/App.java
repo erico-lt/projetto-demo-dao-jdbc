@@ -5,12 +5,13 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
 
-        DepartmentDao departmentDao = DaoFactory.creatDepartmentDaoJDBC();
-        Department publicidade = new  Department("limpeza", 6);
+        DepartmentDao departmentDao = DaoFactory.creatDepartmentDaoJDBC();        
+        Department department = null;
         try {
-            departmentDao.deletById(publicidade.getId());;
+            department = departmentDao.findByiId(5);
         } catch (Exception e) {
             System.out.println("erro insert by: " + e.getMessage());
         }
+        System.out.println(department.toString());
     }
 }

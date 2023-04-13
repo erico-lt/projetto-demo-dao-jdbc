@@ -51,7 +51,7 @@ public class DB {
             throw new DbException("[ERRO] by: " + e.getMessage());
         } finally {
             closeResult(rs);
-            closeStatment(st);
+            closeStatement(st);
         }
 
     }
@@ -92,7 +92,7 @@ public class DB {
             st = getConnection().createStatement();
             st.executeUpdate(sql);
             System.out.println("Table creat with success");
-            closeStatment(st);
+            closeStatement(st);
         } catch (SQLException e) {
             throw new DbException("[ERRO] failure by: " + e.getMessage());
         }
@@ -140,7 +140,7 @@ public class DB {
             throw new DbException("[ERRO] failure inrest by: " + e.getMessage());
         } finally {
             closeConnection(con);
-            closeStatment(ps);
+            closeStatement(ps);
         }
     }
 
@@ -193,7 +193,7 @@ public class DB {
 
     }
 
-    public static void closeStatment(Statement st) {
+    public static void closeStatement(Statement st) {
         if (st != null) {
             try {
                 st.close();
