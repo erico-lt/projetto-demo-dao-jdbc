@@ -16,7 +16,7 @@ public class DepartmentDaoJDBC implements DepartmentDao{
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            String sql = "INSERT INTO department (name, id) VALUE (?,?)";
+            String sql = "INSERT INTO department (Name, id) VALUE (?,?)";
             con = DB.getConnection();
             con.setAutoCommit(false);
             ps = con.prepareStatement(sql);
@@ -51,7 +51,7 @@ public class DepartmentDaoJDBC implements DepartmentDao{
             con.setAutoCommit(false);            
             ps = con.prepareStatement(query);
             ps.setString(1, obj.getName()); 
-            ps.setInt(2, obj.getId());
+            
             int rows = ps.executeUpdate();  
             con.commit();
             System.out.printf("Success update, rows affected %d \n", rows);  
