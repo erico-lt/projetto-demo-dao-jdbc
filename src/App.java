@@ -1,15 +1,16 @@
+import java.util.Date;
 import java.util.List;
 
 import model.dao.*;
-import model.entites.Department;
+import model.entites.Seller;
 
 public class App {
-    public static void main(String[] args) {   
+    public static void main(String[] args) {       
         
-        DepartmentDao departmentDao = DaoFactory.creatDepartmentDaoJDBC();
+        Seller seller = new Seller(7, "Erico", "erico.blp@gmail.com", new Date(), 3000);
+        SellerDao  sellerDao = DaoFactory.creatSellerDaoJDBC();
         try {
-            List<Department> departmentList = departmentDao.findAll();
-            departmentList.forEach(System.out::println);
+            sellerDao.insert(seller);
         } catch (Exception e) {
             System.out.println("erro insert by: " + e.getMessage());
         }

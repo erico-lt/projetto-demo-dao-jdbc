@@ -101,9 +101,9 @@ public class DepartmentDaoJDBC implements DepartmentDao{
         PreparedStatement ps = null;
         ResultSet rs = null;
         String name;
-        Integer idReturn;
-        Department department = null;
+        Integer idReturn;       
         try {
+            Department department = new Department();
             con = DB.getConnection();
             con.setAutoCommit(false);
             ps = con.prepareStatement(query);
@@ -113,7 +113,8 @@ public class DepartmentDaoJDBC implements DepartmentDao{
             while (rs.next()) {
                 name = rs.getString("Name");
                 idReturn = rs.getInt("Id"); 
-                department = new Department(name,idReturn);               
+                department.setId(idReturn);
+                department.setName(name);               
             }            
             con.commit(); 
             return department;

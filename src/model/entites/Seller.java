@@ -19,7 +19,11 @@ public class Seller implements Serializable{
     }
 
     public Seller (int id, String name, String email, Date date, double baseSalary) {
-
+        this.setId(id);
+        this.setName(name);
+        this.setEmail(email);
+        this.setBirthDate(date);
+        this.setBaseSalary(baseSalary);
     }    
 
     public int getId() {
