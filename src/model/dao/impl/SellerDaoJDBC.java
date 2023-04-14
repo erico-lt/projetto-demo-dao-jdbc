@@ -24,7 +24,7 @@ public class SellerDaoJDBC implements SellerDao{
             ps.setString(2, obj.getEmail());
             ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
             ps.setDouble(4, obj.getBaseSalary());
-            ps.setInt(5, 1);
+            ps.setInt(5, 3);
             int rowsAffected = ps.executeUpdate();
             con.commit();
             System.out.printf("Success!! item added, rows affected %d \n", rowsAffected);
@@ -40,8 +40,33 @@ public class SellerDaoJDBC implements SellerDao{
 
     @Override
     public void update(Seller obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        String query = "UPDATE seller SET Name = ?,Email = ?,BirthDate = ?,BaseSalary = ?,DepartmentId = ? WHERE (Id = ?)";
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = DB.getConnection();
+            con.setAutoCommit(false);
+            ps = con.prepareStatement(query);
+
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getEmail());
+            ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            ps.setDouble(4, obj.getBaseSalary());
+            ps.setInt(5, 3);
+            ps.setInt(6, obj.getId());
+            int rowsAffected = ps.executeUpdate();
+
+            con.commit();
+            System.out.printf("Success!! Update, rows affected: %d \n", rowsAffected);
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                throw new DbException("[ERRO] failure update!! Erro by: " + e.getMessage());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     @Override
