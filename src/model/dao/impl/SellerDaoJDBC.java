@@ -5,14 +5,20 @@ import java.util.List;
 
 import db.*;
 import model.dao.SellerDao;
+import model.entites.Department;
 import model.entites.Seller;
 
-public class SellerDaoJDBC implements SellerDao{
+public class SellerDaoJDBC implements SellerDao {
+    Connection conn = null;
+
+    public SellerDaoJDBC(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
     public void insert(Seller obj) {
         String sql = "INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)"
-        +" VALUE(?,?,?,?,?)";
+                + " VALUE(?,?,?,?,?)";
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -77,8 +83,33 @@ public class SellerDaoJDBC implements SellerDao{
 
     @Override
     public Seller findByiId(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByiId'");
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "SELECT seller.*, department.Name as DepName"
+            + " FROM seller INNER JOIN department"
+            + " ON seller.DepartmentId = department.Id"
+            + " WHERE seller.Id = ?";
+
+        try {
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Department dep = new Department(rs.getString("DepName"), rs.getInt("DepartmentId"));
+                Integer idSele = rs.getInt("Id");
+                String name = rs.getString("Name");
+                String email = rs.getString("Email");
+                Date date = rs.getDate("BirthDate");
+                Double salary = rs.getDouble("BaseSalary");
+                Seller seller = new Seller(idSele, name, email, date, salary);
+                seller.setDepartment(dep);
+                return seller;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DbException("[ERRO] Problem finding seller, erro by:" + e.getMessage());
+        }
+
     }
 
     @Override
@@ -86,5 +117,5 @@ public class SellerDaoJDBC implements SellerDao{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
-    
+
 }
