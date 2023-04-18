@@ -1,7 +1,7 @@
 package model.dao.impl;
 
 import java.sql.*;
-import java.util.List;
+import java.util.List; 
 
 import db.*;
 import model.dao.SellerDao;
@@ -77,8 +77,20 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void deletById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletById'");
+        String query = "DELETE FROM seller WHERE Id = ?";        
+        PreparedStatement ps = null;
+
+        try {
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            int rowsAffected = ps.executeUpdate();
+            System.out.println("Sucess!! Rows affected:" + rowsAffected);
+        } catch (SQLException e) {
+            throw new DbException("[ERRO] failure delet, erro by: " + e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
+
     }
 
     @Override
