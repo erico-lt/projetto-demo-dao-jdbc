@@ -108,6 +108,9 @@ public class SellerDaoJDBC implements SellerDao {
             return null;
         } catch (SQLException e) {
             throw new DbException("[ERRO] Problem finding seller, erro by:" + e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+            DB.closeResult(rs);
         }
 
     }
