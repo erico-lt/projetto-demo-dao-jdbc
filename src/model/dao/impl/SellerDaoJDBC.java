@@ -1,7 +1,8 @@
 package model.dao.impl;
 
 import java.sql.*;
-import java.util.List; 
+import java.util.ArrayList;
+import java.util.List;
 
 import db.*;
 import model.dao.SellerDao;
@@ -77,7 +78,7 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void deletById(Integer id) {
-        String query = "DELETE FROM seller WHERE Id = ?";        
+        String query = "DELETE FROM seller WHERE Id = ?";
         PreparedStatement ps = null;
 
         try {
@@ -98,9 +99,9 @@ public class SellerDaoJDBC implements SellerDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT seller.*, department.Name as DepName"
-            + " FROM seller INNER JOIN department"
-            + " ON seller.DepartmentId = department.Id"
-            + " WHERE seller.Id = ?";
+                + " FROM seller INNER JOIN department"
+                + " ON seller.DepartmentId = department.Id"
+                + " WHERE seller.Id = ?";
 
         try {
             ps = conn.prepareStatement(query);
@@ -129,8 +130,38 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public List<Seller> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        String query = "SELECT seller.*, department.Name as DepName"
+        + " FROM seller INNER JOIN department" 
+        + " ON seller.DepartmentId = department.Id";
+        List<Seller> listSeller = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery(query);
+            while (rs.next()) {
+                Integer id = rs.getInt("Id");
+                String name = rs.getString("Name");
+                String email = rs.getString("Email");
+                Date date = rs.getDate("BirthDate");
+                Double salary = rs.getDouble("BaseSalary");
+
+                Department dep = new Department(rs.getString("DepName"), rs.getInt("DepartmentId"));
+                Seller seller = new Seller(id, name, email, date, salary );
+                seller.setDepartment(dep);
+
+                listSeller.add(seller);
+            }
+
+            return listSeller;
+        } catch (SQLException e) {
+            throw new DbException("[ERRO] failure, erro by: " + e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+            DB.closeResult(rs);
+        }
+
     }
 
 }
