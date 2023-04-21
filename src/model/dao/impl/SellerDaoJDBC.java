@@ -42,6 +42,8 @@ public class SellerDaoJDBC implements SellerDao {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+        } finally {
+            DB.closeStatement(ps);
         }
     }
 
@@ -73,6 +75,8 @@ public class SellerDaoJDBC implements SellerDao {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+        } finally {
+            DB.closeStatement(ps);
         }
     }
 
@@ -108,14 +112,8 @@ public class SellerDaoJDBC implements SellerDao {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Department dep = new Department(rs.getString("DepName"), rs.getInt("DepartmentId"));
-                Integer idSele = rs.getInt("Id");
-                String name = rs.getString("Name");
-                String email = rs.getString("Email");
-                Date date = rs.getDate("BirthDate");
-                Double salary = rs.getDouble("BaseSalary");
-                Seller seller = new Seller(idSele, name, email, date, salary);
-                seller.setDepartment(dep);
+                Department dep = instantiatDep(rs);                
+                Seller seller = instatiatSeller(rs, dep);                
                 return seller;
             }
             return null;
@@ -126,6 +124,21 @@ public class SellerDaoJDBC implements SellerDao {
             DB.closeResult(rs);
         }
 
+    }
+
+    private Seller instatiatSeller(ResultSet rs, Department dep) throws SQLException{
+        Integer idSele = rs.getInt("Id");
+        String name = rs.getString("Name");
+        String email = rs.getString("Email");
+        Date date = rs.getDate("BirthDate");
+        Double salary = rs.getDouble("BaseSalary");
+        Seller seller = new Seller(idSele, name, email, date, salary);
+        seller.setDepartment(dep);
+        return seller;
+    }
+
+    private Department instantiatDep(ResultSet rs) throws SQLException{        
+        return new Department(rs.getString("DepName"), rs.getInt("DepartmentId"));
     }
 
     @Override
