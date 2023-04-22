@@ -2,6 +2,7 @@
 import java.util.List;
 
 import model.dao.*;
+import model.entites.Department;
 import model.entites.Seller;
 
 public class App {
@@ -9,8 +10,9 @@ public class App {
         
         SellerDao  sellerDao = DaoFactory.creatSellerDaoJDBC();        
         try {
-           List<Seller> listSeller = sellerDao.findAll();
-           listSeller.forEach(System.out::println);
+            Department dep = new Department(null, 5);
+            List<Seller> listSeller = sellerDao.findByDepartment(dep);
+            listSeller.forEach(System.out::println);
         } catch (Exception e) {
             System.out.println("erro insert by: " + e.getMessage());
         }
