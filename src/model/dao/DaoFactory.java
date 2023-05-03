@@ -11,6 +11,6 @@ public class DaoFactory {
     }
 
     public static DepartmentDao creatDepartmentDaoJDBC () {
-        return new DepartmentDaoJDBC();
+        return new DepartmentDaoJDBC(DB.getConnection());
     }
 }

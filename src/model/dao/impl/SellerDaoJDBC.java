@@ -28,13 +28,20 @@ public class SellerDaoJDBC implements SellerDao {
         try {
             con = DB.getConnection();
             con.setAutoCommit(false);
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, obj.getName());
             ps.setString(2, obj.getEmail());
             ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
             ps.setDouble(4, obj.getBaseSalary());
             ps.setInt(5, 3);
             int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                int id = rs.getInt(1);
+                obj.setId(id);
+            } else {
+                throw new DbException("[ERRO] Seller not added");
+            }
             con.commit();
             System.out.printf("Success!! item added, rows affected %d \n", rowsAffected);
         } catch (SQLException e) {
@@ -51,14 +58,12 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void update(Seller obj) {
-        String query = "UPDATE seller SET Name = ?,Email = ?,BirthDate = ?,BaseSalary = ?,DepartmentId = ? WHERE (Id = ?)";
-        Connection con = null;
+        String query = "UPDATE seller SET Name = ?,Email = ?,BirthDate = ?,BaseSalary = ?,DepartmentId = ? WHERE (Id = ?)";        
         PreparedStatement ps = null;
 
-        try {
-            con = DB.getConnection();
-            con.setAutoCommit(false);
-            ps = con.prepareStatement(query);
+        try {            
+            conn.setAutoCommit(false);
+            ps = conn.prepareStatement(query);
 
             ps.setString(1, obj.getName());
             ps.setString(2, obj.getEmail());
@@ -68,11 +73,11 @@ public class SellerDaoJDBC implements SellerDao {
             ps.setInt(6, obj.getId());
             int rowsAffected = ps.executeUpdate();
 
-            con.commit();
+            conn.commit();
             System.out.printf("Success!! Update, rows affected: %d \n", rowsAffected);
         } catch (SQLException e) {
             try {
-                con.rollback();
+                conn.rollback();
                 throw new DbException("[ERRO] failure update!! Erro by: " + e.getMessage());
             } catch (SQLException e1) {
                 e1.printStackTrace();
