@@ -21,14 +21,12 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public void insert(Seller obj) {
         String sql = "INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)"
-                + " VALUE(?,?,?,?,?)";
-        Connection con = null;
+                + " VALUE(?,?,?,?,?)";        
         PreparedStatement ps = null;
 
         try {
-            con = DB.getConnection();
-            con.setAutoCommit(false);
-            ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            conn.setAutoCommit(false);
+            ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, obj.getName());
             ps.setString(2, obj.getEmail());
             ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
@@ -42,11 +40,11 @@ public class SellerDaoJDBC implements SellerDao {
             } else {
                 throw new DbException("[ERRO] Seller not added");
             }
-            con.commit();
+            conn.commit();
             System.out.printf("Success!! item added, rows affected %d \n", rowsAffected);
         } catch (SQLException e) {
             try {
-                con.rollback();
+                conn.rollback();
                 throw new DbException("[ERRO] failure addition, errro by: " + e.getMessage());
             } catch (SQLException e1) {
                 e1.printStackTrace();
