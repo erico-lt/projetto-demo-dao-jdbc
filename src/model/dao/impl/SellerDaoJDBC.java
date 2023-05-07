@@ -32,8 +32,8 @@ public class SellerDaoJDBC implements SellerDao {
             ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
             ps.setDouble(4, obj.getBaseSalary());
             ps.setInt(5, 3);
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
+            int rows_Affected = ps.executeUpdate();
+            if (rows_Affected > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 int id = rs.getInt(1);
                 obj.setId(id);
@@ -41,7 +41,7 @@ public class SellerDaoJDBC implements SellerDao {
                 throw new DbException("[ERRO] Seller not added");
             }
             conn.commit();
-            System.out.printf("Success!! item added, rows affected %d \n", rowsAffected);
+            System.out.printf("Success!! item added, rows affected %d \n", rows_Affected);
         } catch (SQLException e) {
             try {
                 conn.rollback();
