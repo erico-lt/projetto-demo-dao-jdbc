@@ -106,10 +106,10 @@ public class DepartmentDaoJDBC implements DepartmentDao{
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                String name = rs.getString("Name");
+                String nam = rs.getString("Name");
                 Integer idReturn = rs.getInt("Id"); 
                 department.setId(idReturn);
-                department.setName(name);               
+                department.setName(nam);               
             }            
             conn.commit(); 
             return department;
